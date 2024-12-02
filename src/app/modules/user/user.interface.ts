@@ -6,3 +6,9 @@ export type TUser = {
     needsPasswordChange: boolean;
     isDeleted: boolean;
 };
+
+export type NewUser = {
+    id: string;
+    role: string;
+    password: string;
+}
