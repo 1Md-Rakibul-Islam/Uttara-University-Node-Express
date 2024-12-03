@@ -10,8 +10,6 @@ import {
     TStudent,
     TUserName,
 } from '../student/student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 // import validator from 'validator';
 
 const userNameSchema = new Schema<TUserName>({
@@ -100,10 +98,6 @@ const studentSchema = new Schema<TStudent, StudentModel>({
         unique: true,
         ref: "User"
     },
-    password: {
-        type: String, required: [true, 'Password is required'], unique: true,
-        maxlength: [20, 'Password cannot be more than 20 characters'],
-    },
     name: {
         type: userNameSchema,
         required: [true, 'Student name is required'],
@@ -160,22 +154,6 @@ studentSchema.virtual("fullName").get(function () {
     )
 });
 
-// pre save middleware / hook 
-studentSchema.pre("save", async function (next) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const user = this;
-
-    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
-
-    next();
-});
-
-// post save middleware / hook 
-studentSchema.post("save", function (doc, next) {
-    doc.password = "";
-    next();
-});
-
 // query middleware / hook
 studentSchema.pre("find", async function (next) {
     this.find({ isDeleted: { $ne: true } });
@@ -194,9 +172,6 @@ studentSchema.pre("aggregate", function (next) {
 });
 
 
-
-
-
 // create a custom static method
 studentSchema.statics.isUserExists = async function (id: string) {
 
@@ -206,11 +181,3 @@ studentSchema.statics.isUserExists = async function (id: string) {
 }
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
-
-// studentSchema.methods.isUserExists = async function (id: string) {
-//     const existingUser = await Student.findOne({ id: id });
-
-//     return existingUser;
-// }
-
-// export const Student = model<TStudent, StudentModel>('Student', studentSchema);
