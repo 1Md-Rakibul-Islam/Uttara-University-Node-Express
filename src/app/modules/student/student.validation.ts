@@ -41,25 +41,28 @@ const localGuardianValidationSchema = z.object({
     address: z.string().min(1, "Local guardian's address is required"),
 });
 
-const studentValidationSchema = z.object({
-    id: z.string().min(1, 'Student ID is required'),
-    password: z.string().max(20, 'Password cannot be more than 20 characters'),
-    name: userNameValidationSchema,
-    gender: z.enum(['male', 'female', 'other'], { required_error: 'Gender is required' }),
-    dateOfBirth: z.string().optional(),
-    email: z.string().email('Email is required'),
-    contactNo: z.string().min(1, 'Contact number is required'),
-    emergencyContactNo: z.string().min(1, 'Emergency contact number is required'),
-    bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], {
-        required_error: 'Blood group is required',
+const createStudentValidationSchema = z.object({
+    body: z.object({
+        password: z.string().max(20, 'Password cannot be more than 20 characters'),
+        student: z.object({
+            name: userNameValidationSchema,
+            gender: z.enum(['male', 'female', 'other'], { required_error: 'Gender is required' }),
+            dateOfBirth: z.string().optional(),
+            email: z.string().email('Email is required'),
+            contactNo: z.string().min(1, 'Contact number is required'),
+            emergencyContactNo: z.string().min(1, 'Emergency contact number is required'),
+            bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], {
+                required_error: 'Blood group is required',
+            }),
+            presentAddress: z.string().min(1, 'Present address is required'),
+            permanentAddress: z.string().min(1, 'Permanent address is required'),
+            guardian: guardianValidationSchema,
+            localGuardian: localGuardianValidationSchema,
+            profileImg: z.string().optional(),
+        })
     }),
-    presentAddress: z.string().min(1, 'Present address is required'),
-    permanentAddress: z.string().min(1, 'Permanent address is required'),
-    guardian: guardianValidationSchema,
-    localGuardian: localGuardianValidationSchema,
-    profileImg: z.string().optional(),
-    isActive: z.enum(['active', 'blocked']).default('active'),
-    isDeleted: z.boolean(),
 });
 
-export default studentValidationSchema;
+export const studentValidations = {
+    createStudentValidationSchema
+};
