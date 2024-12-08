@@ -27,12 +27,12 @@ export type TStudent = {
     user: Types.ObjectId;
     password: string;
     name: TUserName;
-    gender: 'male' | 'female' | 'other';
-    dateOfBirth?: string;
+    gender: "male" | "female" | "other";
+    dateOfBirth?: Date;
     email: string;
     contactNo: string;
     emergencyContactNo: string;
-    bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+    bloodGroup: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
     presentAddress: string;
     permanentAddress: string;
     guardian: TGuardian;
@@ -45,7 +45,6 @@ export type TStudent = {
 export interface StudentModel extends Model<TStudent> {
     isUserExists(id: string): Promise<TStudent | null>;
 }
-
 
 // user define instance methods
 // export type StudentMethods = {

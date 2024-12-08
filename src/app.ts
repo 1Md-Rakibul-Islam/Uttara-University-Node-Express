@@ -14,15 +14,15 @@ app.use(cors());
 app.use("/api/v1/", router);
 
 app.get("/", (req: Request, res: Response) => {
-    const a = {
-        name: "uttara university - server running",
-        version: "1.0.0",
-    };
-    res.status(200).json({
-        status: 200,
-        data: a,
-        message: "success",
-    });
+  const a = {
+    name: "uttara university - server running",
+    version: "1.0.0",
+  };
+  res.status(200).json({
+    status: 200,
+    data: a,
+    message: "success",
+  });
 });
 
 // global error handler
