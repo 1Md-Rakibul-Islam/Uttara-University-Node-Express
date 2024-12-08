@@ -1,11 +1,13 @@
+import { TAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemester } from "./academicSemester.model";
 
-const createAcademicSemesterIntoDB = () => {
-  const result = AcademicSemester.create();
+const createAcademicSemesterIntoDB = (playload: TAcademicSemester) => {
 
-  return result;
+    const result = AcademicSemester.create(playload);
+
+    return result;
 };
 
 export const AcademicSemesterServices = {
-  createAcademicSemesterIntoDB,
+    createAcademicSemesterIntoDB,
 };
