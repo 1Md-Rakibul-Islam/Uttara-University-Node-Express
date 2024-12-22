@@ -20,6 +20,28 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
     },
 );
 
+academicDepartmentSchema.pre("save", async function (next) {
+    const isDepartmentExist = await AcademicDepartment.findOne({ name: this.name });
+
+    if (isDepartmentExist) {
+        throw new Error("This department is already exist!");
+    }
+
+    next();
+});
+
+academicDepartmentSchema.pre("findOneAndUpdate", function (next) {
+
+    const query = this.getQuery();
+    const isDepartmentExist = AcademicDepartment.findOneAndUpdate(query);
+
+    if (!isDepartmentExist) {
+        throw new Error("Department not found")
+    }
+
+    next();
+});
+
 // academicDepartmentSchema.pre('save', async function (next) {
 //     const isDepartmentExist = await AcademicDepartment.findOne({
 //         name: this.name,

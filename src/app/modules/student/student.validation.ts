@@ -66,8 +66,9 @@ const createStudentValidationSchema = z.object({
       permanentAddress: z.string().min(1, "Permanent address is required"),
       guardian: guardianValidationSchema,
       localGuardian: localGuardianValidationSchema,
-      admissionSemester: z.string().min(1, "Admission semester is required"),
       profileImg: z.string().optional(),
+      admissionSemester: z.string().min(1, "Admission semester is required"),
+      academicDepartment: z.string().min(1, "Academic department is required"),
     }),
   }),
 });
