@@ -93,7 +93,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     user: {
       type: Schema.Types.ObjectId,
       required: [true, "User id is required"],
-      unique: true,
       ref: "User",
     },
     name: {
@@ -121,7 +120,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     contactNo: {
       type: String,
       required: [true, "Contact number is required"],
-      unique: true,
     },
     emergencyContactNo: {
       type: String,

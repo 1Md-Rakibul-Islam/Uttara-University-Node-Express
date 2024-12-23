@@ -6,6 +6,9 @@ import User from "./user.model";
 import { generateStudenId } from "./user.utils";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { TAcademicSemester } from "../academicSemester/academicSemester.interface";
+import mongoose from "mongoose";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
 
 const createStudentIntoDb = async (password: string, payload: TStudent) => {
 
@@ -23,22 +26,48 @@ const createStudentIntoDb = async (password: string, payload: TStudent) => {
     payload.admissionSemester,
   );
 
-  // auto generate student id m
-  userData.id = await generateStudenId(admissionSemester as TAcademicSemester);
+  const session = await mongoose.startSession();
 
-  // create a user
-  const newUser = await User.create(userData);
+  try {
 
-  // create a student
-  if (Object.keys(newUser).length > 0) {
+    session.startTransaction();
+
+    // auto generate student id m
+    userData.id = await generateStudenId(admissionSemester as TAcademicSemester);
+
+    // create a user [transition 1]
+    const newUser = await User.create([userData], { session }); // array
+
+    //create a student
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+    }
+
     // set id, _id as user
-    payload.id = newUser.id;
-    payload.user = newUser._id; // reference _id
-    const newStudent = await Student.create(payload);
+    payload.id = newUser[0].id;
+    payload.user = newUser[0]._id; // reference _id
+
+    // create a student
+    const newStudent = await Student.create([payload], { session }); // array
+
+    if (!newStudent.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
     return newStudent;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+
+    await session.abortTransaction();
+    await session.endSession();
+
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
   }
 
-  return newUser;
 };
 
 export const UserServices = {
