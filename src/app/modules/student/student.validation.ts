@@ -47,7 +47,6 @@ const createLocalGuardianValidationSchema = z.object({
 
 const createStudentValidationSchema = z.object({
   body: z.object({
-    password: z.string().max(20, "Password cannot be more than 20 characters"),
     student: z.object({
       name: createUserNameValidationSchema,
       gender: z.enum(["male", "female", "other"], {
