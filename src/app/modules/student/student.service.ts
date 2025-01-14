@@ -5,10 +5,14 @@ import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 import User from "../user/user.model";
 import { TStudent } from "./student.interface";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { studentSearchableFields } from "./student.constant";
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   console.log("base query", query);
+
+  /*
 
   const queryObj = { ...query };
 
@@ -91,7 +95,18 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   const fieldQuery = await limitQuery.select(fields);
 
-  return fieldQuery;
+  */
+
+  const studentQuery = new QueryBuilder(Student.find(), query)
+    .search(studentSearchableFields)
+    .fields()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = studentQuery.modelQuery;
+
+  return result;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
